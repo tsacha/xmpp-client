@@ -23,4 +23,6 @@ func main() {
 	json.Unmarshal(file, &c)
 
 	xmpp.Connect(c.Account, c.Password)
+
+	select {}
 }
