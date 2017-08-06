@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>XMPP Client</title>
+    <link rel="stylesheet" href="base.css" type="text/css" media="screen" />
+    <script src="vue@2.4.2.js"></script>
+  </head>
+  <body>
+    <div id="app">
+      <input v-model="jid" placeholder="JID" />
+      <input type="password" v-model="passwd" placeholder="Password" />
+      <input v-model="resource" placeholder="Resource" />      
+      <button v-on:click="btn_connect">Connect</button>
+      <ul v-for="contact in contacts">
+	<li>{{ contact.jid }} ({{ contact.name }})</li>
+      </ul>
+    </div>
+
+    <script>
+      var app = new Vue({
+	  el: "#app",
+	  data: {
+	      jid: "",
+	      passwd: "",
+	      resource: "",
+	      contacts: []
+	  },
+	  methods: {
+	      btn_connect: function () {
+		  var client_msg = {
+		      jid: app.jid,
+		      password: app.passwd,
+		      resource: app.resource,
+		  };
+		  ws.send(JSON.stringify(client_msg));
+	      }
+	  }
+      })
+    </script>
+    <script>
+      var ws = new WebSocket('ws://localhost:5282/websocket');
+
+      ws.onopen = function(event) {
+      };
+
+      ws.onmessage = function(event) {
+	  console.log(event.data);
+	  var msg = JSON.parse(event.data);
+	  app.contacts = msg
+      };
+    </script>
+
+  </body>
+</html>
