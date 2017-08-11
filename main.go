@@ -23,6 +23,7 @@ type Configuration struct {
 
 type Connection struct {
 	Jid      string `json:"jid"`
+	Domain   string `json:"domain"`
 	Password string `json:"password"`
 	Resource string `json:"resource"`
 }
@@ -44,14 +45,14 @@ func GetCredentials() (string, string) {
 	return c.Account, c.Password
 }
 
-func testRoster(account string, password string, resource string) []byte {
+func testRoster(account string, password string, domain string, resource string) []byte {
 
-	xmpp := libxmpp.Connect(account, password, resource)
+	xmpp := libxmpp.Connect(account, password, domain, resource)
 
 	go xmpp.InfinitePing()
 
-	xmpp.Disco("tremoureux.fr")
-	xmpp.Disco(account)
+	//	xmpp.Disco(domain)
+	//	xmpp.Disco(account)
 
 	xmpp.GetRoster()
 	contacts, _ := json.Marshal(xmpp.State.Roster.Contacts)
@@ -81,11 +82,13 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 
 		fmt.Println(data.Jid)
 
-		conn.WriteMessage(mt, testRoster(data.Jid, data.Password, data.Resource))
+		conn.WriteMessage(mt, testRoster(data.Jid, data.Password, data.Domain, data.Resource))
 	}
 }
 
 func main() {
+	fmt.Println("Hello world")
+
 	// mux handler
 	router := mux.NewRouter()
 

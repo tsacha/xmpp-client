@@ -9,7 +9,8 @@
     <div id="app">
       <input v-model="jid" placeholder="JID" />
       <input type="password" v-model="passwd" placeholder="Password" />
-      <input v-model="resource" placeholder="Resource" />      
+      <input v-model="domain" placeholder="Domain" />
+      <input v-model="resource" placeholder="Resource" />
       <button v-on:click="btn_connect">Connect</button>
       <ul v-for="contact in contacts">
 	<li>{{ contact.jid }} ({{ contact.name }})</li>
@@ -20,9 +21,10 @@
       var app = new Vue({
 	  el: "#app",
 	  data: {
-	      jid: "",
-	      passwd: "",
-	      resource: "",
+	      jid: "sacha",
+	      passwd: "toto",
+	      domain: "dev.tremoureux.fr",
+	      resource: "dev-laptop",
 	      contacts: []
 	  },
 	  methods: {
@@ -30,9 +32,11 @@
 		  var client_msg = {
 		      jid: app.jid,
 		      password: app.passwd,
+		      domain: app.domain,
 		      resource: app.resource,
 		  };
 		  ws.send(JSON.stringify(client_msg));
+		  console.log(client_msg);
 	      }
 	  }
       })
